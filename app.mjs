@@ -11,24 +11,23 @@ import logger from "morgan";
 import bodyParser from "body-parser";
 // import router from "./routes/root.mjs";
 // import startChat from "./controllers/chat";
-import server from "http";
+import http_server from "http";
 
 /// prepare config for server
 dotenv.config();
 const app = express();
-server.createServer(app);
+const server = http_server.createServer(app);
 
 app.use(cors({ origin: "*" }));
-// app.use(logger("dev"));
+app.use(logger("dev"));
 app.use(express.json());
 app.use(bodyParser.text());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(express.static(path.join(path.dirname(__filename), "public")));
+app.use(express.static(path.join(process.cwd(), "public")));
 
 // app.use("/", router);
-app.use("/", () => console.log("test modules works"));
 
 app.use((req, res, next) => {
   next(createError(404));
@@ -69,11 +68,11 @@ const startDB = () => {
 const startApp = serverPort => serverState => {
   startDB().once("open", () => {
     startServer(serverState, serverPort)
-      // .then(server => {
-      //   console.log("app started on port", port);
-      //   startChat(server);
-      //   console.log("chat started on port", port);
-      // })
+      .then(server => {
+        console.log("app started on port", port);
+        // startChat(server);
+        // console.log("chat started on port", port);
+      })
       .catch(error => console.log("error during server start", error));
   });
 };
