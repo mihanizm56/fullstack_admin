@@ -1,0 +1,13 @@
+# Folders to ignore
+.git
+.exe
+.vscode
+.env
+dist
+build
+
+# Files to ignore
+package-lock.json
+
+# Node.JS
+node_modules
