@@ -1,8 +1,8 @@
-import chatServer from "socket.io";
+import socket from "socket.io";
 let users = [];
 
-module.exports = server => {
-  const io = chatServer(server);
+const chatServer = server => {
+  const io = socket(server);
 
   io.on("connection", socket => {
     let id = socket.id;
@@ -37,3 +37,5 @@ module.exports = server => {
     });
   });
 };
+
+export default chatServer;

@@ -10,7 +10,7 @@ import { validateNews } from "../../services/validation/news/index.mjs";
 import { getUserFromDbById } from "../../models/users/index.mjs";
 import { createToken } from "../../services/tokens/index.mjs";
 
-const getNews = async (req, res) => {
+export const getNews = async (req, res) => {
   try {
     const news = await getAllNews();
 
@@ -50,7 +50,7 @@ const getNews = async (req, res) => {
   }
 };
 
-const newNews = async (req, res) => {
+export const newNews = async (req, res) => {
   const newNew = JSON.parse(req.body);
   // const newNew = req.body;
   const { theme, date, text, userId } = newNew;
@@ -112,7 +112,7 @@ const newNews = async (req, res) => {
   }
 };
 
-const updateNews = async (req, res) => {
+export const updateNews = async (req, res) => {
   const newToUpdate = JSON.parse(req.body);
   // const updateNew = req.body;
   const { theme, text, userId, date, id } = newToUpdate;
@@ -161,7 +161,7 @@ const updateNews = async (req, res) => {
   }
 };
 
-const deleteNews = async (req, res) => {
+export const deleteNews = async (req, res) => {
   // const deleteNew = JSON.parse(req.body);
   const deleteNewData = req.params;
   // console.log("check data of delete new", deleteNewData);
@@ -176,11 +176,4 @@ const deleteNews = async (req, res) => {
 
     res.status(400).send("delete error");
   }
-};
-
-module.exports = {
-  getNews,
-  newNews,
-  updateNews,
-  deleteNews
 };

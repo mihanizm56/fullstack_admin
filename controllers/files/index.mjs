@@ -3,7 +3,7 @@ import { mkdir, rename } from "../../services/promisify";
 import { photoValidation } from "../../services/validation/photo";
 import { savePhotoToUser } from "../../models/users";
 
-const saveUserImage = async (req, res) => {
+export const saveUserImage = async (req, res) => {
   // console.log("start upload photo", req.files);
   const fileToUpload = req.files[0]; ///////////////////////////////////////////////////govno
   const userId = req.params;
@@ -31,5 +31,3 @@ const saveUserImage = async (req, res) => {
     res.status(500).send("not valid date");
   }
 };
-
-module.exports = { saveUserImage };

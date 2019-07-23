@@ -9,9 +9,9 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 import bodyParser from "body-parser";
-import router from "./routes/root.mjs";
-// import startChat from "./controllers/chat";
 import http_server from "http";
+import router from "./routes/root.mjs";
+import startChat from "./controllers/chat/index.mjs";
 
 /// prepare config for server
 dotenv.config();
@@ -70,15 +70,11 @@ const startApp = serverPort => serverState => {
     startServer(serverState, serverPort)
       .then(server => {
         console.log("app started on port", port);
-        // startChat(server);
-        // console.log("chat started on port", port);
+        startChat(server);
+        console.log("chat started on port", port);
       })
       .catch(error => console.log("error during server start", error));
   });
 };
 
-// if (require.main === module) {
 startApp(port)(server);
-// } else {
-//   module.exports.startApp = startApp(port);
-// }

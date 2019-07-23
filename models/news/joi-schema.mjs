@@ -1,6 +1,6 @@
 import Joi from "@hapi/joi";
 
-module.exports = Joi.object().keys({
+const newsSchema = Joi.object().keys({
   theme: Joi.string()
     .min(1)
     .max(40)
@@ -12,3 +12,5 @@ module.exports = Joi.object().keys({
   userId: Joi.string().required(),
   date: Joi.date()
 });
+
+export default newsSchema;
