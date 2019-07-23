@@ -1,7 +1,8 @@
+import chatServer from "socket.io";
 let users = [];
 
 module.exports = server => {
-  const io = require("socket.io")(server);
+  const io = chatServer(server);
 
   io.on("connection", socket => {
     let id = socket.id;

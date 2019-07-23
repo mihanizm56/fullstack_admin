@@ -1,4 +1,4 @@
-const Joi = require("@hapi/joi");
+import Joi from "@hapi/joi";
 
 module.exports = Joi.object().keys({
   theme: Joi.string()

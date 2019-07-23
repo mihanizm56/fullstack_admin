@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
-const { News } = require("./model.mjs");
-const {
+import mongoose from "mongoose";
+import { News } from "./model.mjs";
+import {
   makeHashedPassword,
   compareHashedPasswords
-} = require("../../services/passwords");
+} from "../../services/passwords";
 
 const NewsModel = mongoose.model("News");
 

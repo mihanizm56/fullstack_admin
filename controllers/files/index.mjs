@@ -1,7 +1,7 @@
-const path = require("path");
-const { mkdir, rename } = require("../../services/promisify");
-const { photoValidation } = require("../../services/validation/photo");
-const { savePhotoToUser } = require("../../models/users");
+import path from "path";
+import { mkdir, rename } from "../../services/promisify";
+import { photoValidation } from "../../services/validation/photo";
+import { savePhotoToUser } from "../../models/users";
 
 const saveUserImage = async (req, res) => {
   // console.log("start upload photo", req.files);

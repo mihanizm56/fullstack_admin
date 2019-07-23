@@ -1,14 +1,14 @@
-const {
+import {
   addNew,
   getAllNews,
   getNew,
   updateNew,
   deleteNew
-} = require("../../models/news");
-const pick = require("lodash/pick");
-const { validateNews } = require("../../services/validation/news");
-const { getUserFromDbById } = require("../../models/users");
-const { createToken } = require("../../services/tokens");
+} from "../../models/news/index.mjs";
+import pick from "lodash/pick";
+import { validateNews } from "../../services/validation/news/index.mjs";
+import { getUserFromDbById } from "../../models/users/index.mjs";
+import { createToken } from "../../services/tokens/index.mjs";
 
 const getNews = async (req, res) => {
   try {
