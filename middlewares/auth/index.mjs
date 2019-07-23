@@ -1,6 +1,6 @@
-const { tokenVerify } = require("../../services/tokens");
+import { tokenVerify } from "../../services/tokens/index.mjs";
 
-const cookieTokenAuth = (req, res, next) =>
+export const cookieTokenAuth = (req, res, next) =>
   tokenVerify(req.cookies.access_token, (error, authData) => {
     if (!error && authData) {
       res.locals.userTokenData = authData;
@@ -9,7 +9,3 @@ const cookieTokenAuth = (req, res, next) =>
       res.status(401).send(false);
     }
   });
-
-module.exports = {
-  cookieTokenAuth
-};

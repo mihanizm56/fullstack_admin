@@ -10,7 +10,7 @@ const {
   makeHashedPassword,
   compareHashedPasswords
 } = require("../../services/passwords");
-const { createToken } = require("../../services/tokens");
+const { createToken } = require("../../services/tokens/index.mjs");
 
 const createUser = async (req, res) => {
   const newUser = JSON.parse(req.body);

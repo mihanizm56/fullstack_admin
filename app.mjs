@@ -9,7 +9,7 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 import bodyParser from "body-parser";
-// import router from "./routes/root.mjs";
+import router from "./routes/root.mjs";
 // import startChat from "./controllers/chat";
 import http_server from "http";
 

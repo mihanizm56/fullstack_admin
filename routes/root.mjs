@@ -37,17 +37,21 @@
 // router.get("*", sendSPA.get);
 
 /////
-import express from('express');
-// import userRouter from "./users.mjs";
+import express from "express";
+import userRouter from "./users.mjs";
+import sendSPA from "../controllers/app/index.mjs";
+
+const router = express.Router();
+
 // import newsRouter from "./news.mjs";
 // import filesRouter from "./files.mjs";
 
-const test = () => console.log('test')
+const test = () => console.log("test");
 
-// router.use("/api/users", userRouter);
+router.use("/api/users", userRouter);
 // router.use("/api/news", newsRouter);
 // router.use("/api/files", filesRouter);
-router.use("/api/users", test);
+// router.use("/api/users", test);
 router.use("/api/news", test);
 router.use("/api/files", test);
 
@@ -55,4 +59,4 @@ router.use("/api/files", test);
 router.get("*", sendSPA.get);
 ////
 
-module.exports = router;
+export default router;

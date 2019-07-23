@@ -1,4 +1,4 @@
-const {
+import {
   addUserInDb,
   getUserFromDbByUserName,
   getUserFromDbById,
@@ -6,19 +6,19 @@ const {
   deleteUserByIdFromDb,
   getAllUsersFromDb,
   updateUserPermissionsDb
-} = require("../../models/users");
-const { validateUser } = require("../../services/validation/user");
-const {
+} from "../../models/users";
+import { validateUser } from "../../services/validation/user";
+import {
   makeHashedPassword,
   compareHashedPasswords
-} = require("../../services/passwords");
-const {
+} from "../../services/passwords";
+import {
   getPermissionUsersData,
   serializePermission
-} = require("../../services/users");
-const { createToken } = require("../../services/tokens");
+} from "../../services/users";
+import { createToken } from "../../services/tokens";
 
-const resultItemConverter = item => {
+export const resultItemConverter = item => {
   return {
     id: item._id,
     username: item.username,
@@ -31,7 +31,7 @@ const resultItemConverter = item => {
   };
 };
 
-const updateUser = async (req, res) => {
+export const updateUser = async (req, res) => {
   const userDataToUpdate = JSON.parse(req.body);
   // const userDataToUpdate = req.body;
   const userId = req.params.id;
@@ -56,19 +56,19 @@ const updateUser = async (req, res) => {
         await updateUserFromDb(userId, userFullData);
         res.status(200).send({ ...userFullData, access_token });
       } catch (error) {
-        console.log('///////////////////',error);
+        console.log("///////////////////", error);
         res.status(400).send("not valid user data");
       }
     } else {
       res.status(401).send("user not valid");
     }
   } catch (error) {
-    console.log('!!!!!!!!!!!!',error);
+    console.log("!!!!!!!!!!!!", error);
     res.status(400).send("not valid user data");
   }
 };
 
-const deleteUser = async (req, res) => {
+export const deleteUser = async (req, res) => {
   const userId = req.params;
   // console.log("check id of user to delete", userId);
 
@@ -81,7 +81,7 @@ const deleteUser = async (req, res) => {
   }
 };
 
-const getAllUsers = async (req, res) => {
+export const getAllUsers = async (req, res) => {
   // console.log("send all users");
 
   try {
@@ -97,7 +97,7 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-const updateUserPermissions = async (req, res) => {
+export const updateUserPermissions = async (req, res) => {
   const userId = req.params.id;
   const userDataToUpdate = JSON.parse(req.body);
   // const {
@@ -126,11 +126,4 @@ const updateUserPermissions = async (req, res) => {
     console.log("error in update in db", error);
     res.status(500).send("error in update in db");
   }
-};
-
-module.exports = {
-  updateUser,
-  deleteUser,
-  getAllUsers,
-  updateUserPermissions
 };

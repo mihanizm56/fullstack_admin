@@ -1,7 +1,7 @@
-const Joi = require("@hapi/joi");
-const userSchema = require("../../../models/users/joi-schema");
+import Joi from "@hapi/joi";
+import userSchema from "../../../models/users/joi-schema";
 
-const validateUser = ({
+export const validateUser = ({
   username,
   password,
   firstName,
@@ -15,5 +15,3 @@ const validateUser = ({
     userSchema
   );
 };
-
-module.exports = { validateUser };

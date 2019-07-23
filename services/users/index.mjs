@@ -1,4 +1,4 @@
-const getPermissionUsersData = arrayOfUsers =>
+export const getPermissionUsersData = arrayOfUsers =>
   arrayOfUsers.map(
     ({
       username,
@@ -20,7 +20,7 @@ const getPermissionUsersData = arrayOfUsers =>
     })
   );
 
-const serializePermission = (prevPermission, nextPermissions) => ({
+export const serializePermission = (prevPermission, nextPermissions) => ({
   chat: {
     C:
       nextPermissions.chat &&
@@ -88,8 +88,3 @@ const serializePermission = (prevPermission, nextPermissions) => ({
         : prevPermission.setting.D
   }
 });
-
-module.exports = {
-  getPermissionUsersData,
-  serializePermission
-};
