@@ -1,4 +1,5 @@
 import socket from "socket.io";
+
 let users = [];
 
 const chatServer = server => {

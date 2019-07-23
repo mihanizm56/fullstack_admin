@@ -32353,10 +32353,13 @@ var user = {
 var actions = {
     loadNews: function (_a) {
         var commit = _a.commit;
-        console.log('Автоматический GET-запрос на /api/getNews - получение списка новостей');
+        console.log('Автоматический GET-запрос на /api/news - получение списка новостей');
         console.log('Необходимо вернуть список всех новостей из базы данных!');
         return new Promise(function (resolve, reject) {
-            return fetch('/api/getNews', {
+            return fetch('/api/news', {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
                 method: 'GET'
             })
                 .then(function (response) {
@@ -32380,10 +32383,13 @@ var actions = {
     },
     saveNewNews: function (_a, payload) {
         var commit = _a.commit;
-        console.log('POST-запрос на /api/newNews - создание новой новости');
+        console.log('POST-запрос на /api/news - создание новой новости');
         console.log('Отправляемые данные: ', payload);
         console.log('Необходимо вернуть обновленный список всех новостей из базы данных!');
-        return fetch('/api/newNews/', {
+        return fetch('/api/news/', {
+            headers: {
+              'Content-Type': 'application/json',
+            },
             method: 'POST',
             body: JSON.stringify(payload)
         })
@@ -32407,10 +32413,13 @@ var actions = {
     },
     updateNews: function (_a, payload) {
         var commit = _a.commit;
-        console.log('PUT-запрос на /api/updateNews/:id - обновление существующей новости');
+        console.log('PUT-запрос на /api/news/:id - обновление существующей новости');
         console.log('Отправляемые данные: ', payload);
         console.log('Необходимо вернуть обновленный список всех новостей из базы данных!');
-        return fetch('/api/updateNews/' + payload.id, {
+        return fetch(`/api/news/${payload.id}`, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
             method: 'PUT',
             body: JSON.stringify(payload)
         })
@@ -32434,11 +32443,14 @@ var actions = {
     },
     deleteNews: function (_a, payload) {
         var commit = _a.commit;
-        console.log('DELETE-запрос на /api/deleteNews/:id - удаление существующей новости');
+        console.log('DELETE-запрос на /api/news/:id - удаление существующей новости');
         console.log('Отправляемые данные: ', payload);
         console.log('Необходимо вернуть обновленный список всех новостей из базы данных!');
-        return fetch('/api/deleteNews/' + payload.id, {
-            method: 'delete'
+        return fetch(`/api/news/${payload.id}`, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            method: 'DELETE'
         })
             .then(function (response) {
             return response.json();
@@ -32461,10 +32473,13 @@ var actions = {
     },
     loadUsers: function (_a) {
         var commit = _a.commit;
-        console.log('Автоматический GET-запрос на /api/getUsers - получение списка пользователей');
+        console.log('Автоматический GET-запрос на /api/users - получение списка пользователей');
         console.log('Необходимо вернуть список всех пользоватлей из базы данных!');
         return new Promise(function (resolve, reject) {
-            return fetch('/api/getUsers', {
+            return fetch('/api/users', {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
                 method: 'GET'
             })
                 .then(function (response) {
@@ -32490,11 +32505,14 @@ var actions = {
     saveUserPermission: function (_a, payload) {
         var commit = _a.commit;
         return new Promise(function (resolve, reject) {
-            console.log('PUT-запрос на /api/updateUserPermission/:id - обновление существующей записи о разрешениях');
+            console.log('PUT-запрос на /api/users/:id/permission - обновление существующей записи о разрешениях');
             console.log('Отправляемые данные: ', payload);
             return fetch(`/api/users/${payload.permissionId}/permission`, {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
                 method: 'PUT',
-                body: payload
+                body: JSON.stringify(payload)
             })
                 .then(function (response) {
                 return response.json();
@@ -32518,7 +32536,7 @@ var actions = {
     },
     loadUserData: function (_a, payload) {
         var commit = _a.commit;
-        console.log('Автоматический POST-запрос на /api/authFromToken - авторизация при наличии токена.');
+        console.log('Автоматический POST-запрос на /api/auth/token - авторизация при наличии токена.');
         console.log('Отправляемые данные: ', payload);
         console.log('Необходимо вернуть объект авторизовавшегося пользователя!');
         fetch('/api/auth/token', {
@@ -32556,7 +32574,7 @@ var actions = {
     },
     authUser: function (_a, payload) {
         var commit = _a.commit;
-        console.log('POST-запрос на /api/login - авторизация после пользователького ввода.');
+        console.log('POST-запрос на /api/auth - авторизация после пользователького ввода.');
         console.log('Отправляемые данные: ', payload);
         console.log('Необходимо вернуть объект авторизовавшегося пользователя!');
         return fetch('/api/auth', {
@@ -32591,10 +32609,13 @@ var actions = {
     },
     saveUpdatedUser: function (_a, payload) {
         var commit = _a.commit;
-        console.log('PUT-запрос на /api/updateUser/:id - обновление информации о пользователе.');
+        console.log('PUT-запрос на /api/users/:id - обновление информации о пользователе.');
         console.log('Отправляемые данные: ', payload);
         console.log('Необходимо вернуть объект обновленного пользователя!');
-        return fetch('/api/updateUser/' + payload.id, {
+        return fetch(`/api/users/:${payload.id}`, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
             method: 'PUT',
             body: JSON.stringify(payload)
         })
@@ -32623,7 +32644,7 @@ var actions = {
     },
     saveUserImage: function (_a, payload) {
         var commit = _a.commit;
-        console.log('POST-запрос на /api/saveUserImage/:id - сохранение изображения пользователя.');
+        console.log('POST-запрос на /api/users/:id/image - сохранение изображения пользователя.');
         var data = new FormData();
         data.append(payload.id, payload.file[0]);
         console.log('Отправляемые данные: ', data);
@@ -32632,7 +32653,7 @@ var actions = {
             headers: {
               'Content-Type': 'multipart/form-data',
             },
-            method: 'put',
+            method: 'PUT',
             body: data
         })
             .then(function (response) {
@@ -32644,10 +32665,13 @@ var actions = {
     },
     deleteUser: function (_a, payload) {
         var commit = _a.commit;
-        console.log('DELETE-запрос на /api/deleteUser/:id - удаление пользователя.');
+        console.log('DELETE-запрос на /api/users/:id - удаление пользователя.');
         console.log('Отправляемые данные: ', payload);
-        return fetch('/api/deleteUser/' + payload.id, {
-            method: 'delete'
+        return fetch(`/api/users/${payload.id}`, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            method: 'DELETE'
         })
             .then(function (response) {
             return response.json();
@@ -32689,7 +32713,7 @@ var actions = {
                 D: false
             }
         };
-        console.log('POST-запрос на /api/saveNewUser - создание нового пользователя (регистрация).');
+        console.log('PUT-запрос на /api/user - создание нового пользователя (регистрация).');
         console.log('Отправляемые данные: ', payload);
         console.log('Необходимо вернуть объект созданного пользователя!');
         return fetch('/api/auth', {
