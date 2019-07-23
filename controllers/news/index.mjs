@@ -51,8 +51,7 @@ export const getNews = async (req, res) => {
 };
 
 export const newNews = async (req, res) => {
-  const newNew = JSON.parse(req.body);
-  // const newNew = req.body;
+  const newNew = req.body;
   const { theme, date, text, userId } = newNew;
   console.log("check data of new", newNew);
 
@@ -113,8 +112,7 @@ export const newNews = async (req, res) => {
 };
 
 export const updateNews = async (req, res) => {
-  const newToUpdate = JSON.parse(req.body);
-  // const updateNew = req.body;
+  const updateNew = req.body;
   const { theme, text, userId, date, id } = newToUpdate;
   // console.log("check data of updated new", newToUpdate);
   try {
@@ -162,7 +160,6 @@ export const updateNews = async (req, res) => {
 };
 
 export const deleteNews = async (req, res) => {
-  // const deleteNew = JSON.parse(req.body);
   const deleteNewData = req.params;
   // console.log("check data of delete new", deleteNewData);
 

@@ -32386,7 +32386,7 @@ var actions = {
         console.log('POST-запрос на /api/news - создание новой новости');
         console.log('Отправляемые данные: ', payload);
         console.log('Необходимо вернуть обновленный список всех новостей из базы данных!');
-        return fetch('/api/news/', {
+        return fetch('/api/news', {
             headers: {
               'Content-Type': 'application/json',
             },
@@ -32612,7 +32612,7 @@ var actions = {
         console.log('PUT-запрос на /api/users/:id - обновление информации о пользователе.');
         console.log('Отправляемые данные: ', payload);
         console.log('Необходимо вернуть объект обновленного пользователя!');
-        return fetch(`/api/users/:${payload.id}`, {
+        return fetch(`/api/users/${payload.id}`, {
             headers: {
               'Content-Type': 'application/json',
             },
@@ -32650,9 +32650,6 @@ var actions = {
         console.log('Отправляемые данные: ', data);
         console.log('Необходимо вернуть объект со свойством path, которое хранит путь до сохраненного изображения.');
         return fetch(`/api/users/${payload.id}/image`, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
             method: 'PUT',
             body: data
         })

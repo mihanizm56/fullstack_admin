@@ -1,3 +1,4 @@
+import path from "path";
 import {
   addUserInDb,
   getUserFromDbByUserName,
@@ -18,7 +19,6 @@ import {
   serializePermission
 } from "../../services/users/index.mjs";
 import { createToken } from "../../services/tokens/index.mjs";
-import path from "path";
 import { mkdir, rename } from "../../services/promisify/index.mjs";
 import { photoValidation } from "../../services/validation/photo/index.mjs";
 
@@ -36,10 +36,9 @@ export const resultItemConverter = item => {
 };
 
 export const updateUser = async (req, res) => {
-  const userDataToUpdate = JSON.parse(req.body);
-  // const userDataToUpdate = req.body;
+  const userDataToUpdate = req.body;
   const userId = req.params.id;
-  // console.log("update user data", userId, userDataToUpdate);
+  console.log("update user data", userId, userDataToUpdate);
 
   try {
     const user = await getUserFromDbById(userId);
@@ -73,7 +72,7 @@ export const updateUser = async (req, res) => {
 };
 
 export const deleteUser = async (req, res) => {
-  const userId = req.params;
+  // const userId = req.params;
   // console.log("check id of user to delete", userId);
 
   try {
@@ -103,7 +102,7 @@ export const getAllUsers = async (req, res) => {
 
 export const updateUserPermissions = async (req, res) => {
   const userId = req.params.id;
-  const userDataToUpdate = JSON.parse(req.body);
+  const userDataToUpdate = req.body;
   // const {
   //   permission:{
   //     chat:{C=false,R=false,U=false,D=false},
