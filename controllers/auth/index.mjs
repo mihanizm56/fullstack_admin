@@ -1,20 +1,20 @@
-const {
+import {
   addUserInDb,
   getUserFromDbByUserName,
   getUserFromDbById,
   updateUserFromDb,
   deleteUserByIdFromDb
-} = require("../../models/users");
-const { validateUser } = require("../../services/validation/user");
-const {
+} from "../../models/users/index.mjs";
+import { validateUser } from "../../services/validation/user/index.mjs";
+import {
   makeHashedPassword,
   compareHashedPasswords
-} = require("../../services/passwords");
-const { createToken } = require("../../services/tokens/index.mjs");
+} from "../../services/passwords/index.mjs";
+import { createToken } from "../../services/tokens/index.mjs";
 
-const createUser = async (req, res) => {
-  const newUser = JSON.parse(req.body);
-  // console.log("check new user", newUser);
+export const saveUser = async (req, res) => {
+  const newUser = req.body;
+  console.log("check new user", newUser);
 
   try {
     await validateUser({ ...newUser, image: newUser.img });
@@ -62,7 +62,7 @@ const createUser = async (req, res) => {
   }
 };
 
-const loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
   const loginedUser = JSON.parse(req.body);
   const isLongLogined = Boolean(loginedUser.remembered);
 
@@ -112,7 +112,7 @@ const loginUser = async (req, res) => {
   }
 };
 
-const tokenAuth = async (req, res) => {
+export const tokenAuth = async (req, res) => {
   // console.log("token user id", res.locals.userTokenData);
   const { user: userId } = res.locals.userTokenData;
   try {
@@ -141,10 +141,4 @@ const tokenAuth = async (req, res) => {
     console.log("get error", error);
     res.status(400).send("not valid user data");
   }
-};
-
-module.exports = {
-  loginUser,
-  createUser,
-  tokenAuth
 };

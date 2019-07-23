@@ -32684,9 +32684,11 @@ var actions = {
         console.log('POST-запрос на /api/saveNewUser - создание нового пользователя (регистрация).');
         console.log('Отправляемые данные: ', payload);
         console.log('Необходимо вернуть объект созданного пользователя!');
-        return fetch('/api/saveNewUser', {
-            method: 'POST',
-            credentials: 'include',
+        return fetch('/api/auth', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
             body: JSON.stringify(payload)
         })
             .then(function (response) {
@@ -34582,7 +34584,7 @@ Request.prototype.create = function () {
         if (this.isBinary) {
           xhr.setRequestHeader('Content-type', 'application/octet-stream');
         } else {
-          xhr.setRequestHeader('Content-type', 'text/plain;charset=UTF-8');
+          xhr.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
         }
       } catch (e) {}
     }

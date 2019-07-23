@@ -5,18 +5,22 @@ import {
   updateUserFromDb,
   deleteUserByIdFromDb,
   getAllUsersFromDb,
-  updateUserPermissionsDb
-} from "../../models/users";
-import { validateUser } from "../../services/validation/user";
+  updateUserPermissionsDb,
+  savePhotoToUser
+} from "../../models/users/index.mjs";
+import { validateUser } from "../../services/validation/user/index.mjs";
 import {
   makeHashedPassword,
   compareHashedPasswords
-} from "../../services/passwords";
+} from "../../services/passwords/index.mjs";
 import {
   getPermissionUsersData,
   serializePermission
-} from "../../services/users";
-import { createToken } from "../../services/tokens";
+} from "../../services/users/index.mjs";
+import { createToken } from "../../services/tokens/index.mjs";
+import path from "path";
+import { mkdir, rename } from "../../services/promisify/index.mjs";
+import { photoValidation } from "../../services/validation/photo/index.mjs";
 
 export const resultItemConverter = item => {
   return {
@@ -125,5 +129,34 @@ export const updateUserPermissions = async (req, res) => {
   } catch (error) {
     console.log("error in update in db", error);
     res.status(500).send("error in update in db");
+  }
+};
+
+export const saveUserImage = async (req, res) => {
+  // console.log("start upload photo", req.files);
+  const fileToUpload = req.files[0]; ///////////////////////////////////////////////////govno
+  const userId = req.params;
+  const { originalname: photoName, size, buffer, filename } = fileToUpload;
+  const staticPath = path.join("upload");
+  const staticPathToFile = path.join(staticPath, photoName);
+  const uploadDir = path.join(process.cwd(), "/public", staticPath);
+
+  try {
+    await photoValidation(fileToUpload);
+    await rename(
+      path.join(uploadDir, filename),
+      path.join(uploadDir, photoName)
+    );
+
+    try {
+      savePhotoToUser({ userId, src: staticPathToFile });
+      res.status(200).send({ path: staticPathToFile });
+    } catch (error) {
+      console.log("error in saving photo path", error);
+      res.status(500).send("internal error");
+    }
+  } catch (error) {
+    console.log("error in saveUserImage", error);
+    res.status(500).send("not valid date");
   }
 };

@@ -21,13 +21,13 @@ const server = http_server.createServer(app);
 app.use(cors({ origin: "*" }));
 app.use(logger("dev"));
 app.use(express.json());
-app.use(bodyParser.text());
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(express.static(path.join(process.cwd(), "public")));
 
-// app.use("/", router);
+app.use("/", router);
 
 app.use((req, res, next) => {
   next(createError(404));

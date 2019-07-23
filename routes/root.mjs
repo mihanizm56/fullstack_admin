@@ -39,6 +39,7 @@
 /////
 import express from "express";
 import userRouter from "./users.mjs";
+import authRouter from "./auth.mjs";
 import sendSPA from "../controllers/app/index.mjs";
 
 const router = express.Router();
@@ -49,11 +50,11 @@ const router = express.Router();
 const test = () => console.log("test");
 
 router.use("/api/users", userRouter);
+router.use("/api/auth", authRouter);
 // router.use("/api/news", newsRouter);
 // router.use("/api/files", filesRouter);
 // router.use("/api/users", test);
-router.use("/api/news", test);
-router.use("/api/files", test);
+// router.use("/api/news", test);
 
 /// send spa
 router.get("*", sendSPA.get);

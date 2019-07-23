@@ -1,5 +1,5 @@
 import Joi from "@hapi/joi";
-import userSchema from "../../../models/users/joi-schema";
+import userSchema from "../../../models/users/joi-schema.mjs";
 
 export const validateUser = ({
   username,
