@@ -1,4 +1,6 @@
 import dotenv from "dotenv";
+import os from "os";
+import cluster from "cluster";
 import { port, dbURL } from "./services/variables/index.mjs";
 import "./services/db-listeners/index.mjs";
 import createError from "http-errors";
@@ -77,4 +79,18 @@ const startApp = serverPort => serverState => {
   });
 };
 
-startApp(port)(server);
+if (cluster.isMaster) {
+  let cpus = os.cpus().length;
+  console.log(`your machine has ${os.cpus().length} cores`);
+
+  for (let i = 0; i < cpus; i++) {
+    console.log(`cluster ${i} started`);
+    cluster.fork();
+  }
+
+  cluster.on("exit", (worker, code) => {
+    console.log(`Worker ${worker.id} finished. Exit code: ${code}`);
+  });
+} else {
+  startApp(port)(server);
+}
