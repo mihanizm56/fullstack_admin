@@ -5,10 +5,12 @@ import {
   updateNew,
   deleteNew
 } from "../../models/news/index.mjs";
-import pick from "lodash/pick";
+import lodash from "lodash";
 import { validateNews } from "../../services/validation/news/index.mjs";
 import { getUserFromDbById } from "../../models/users/index.mjs";
 import { createToken } from "../../services/tokens/index.mjs";
+
+const { pick } = lodash;
 
 export const getNews = async (req, res) => {
   try {

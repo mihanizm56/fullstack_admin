@@ -1,13 +1,16 @@
 import mongoose from "mongoose";
-import { News } from "./model.mjs";
+import "./model.mjs";
 import {
   makeHashedPassword,
   compareHashedPasswords
-} from "../../services/passwords";
+} from "../../services/passwords/index.mjs";
 
 export const NewsModel = mongoose.model("News");
 
-export const addNew = newNew => (newUser = new NewsModel(newNew));
+export const addNew = newNew => {
+  const newUser = new NewsModel(newNew);
+  return newUser;
+};
 
 export const getAllNews = () => NewsModel.find();
 
