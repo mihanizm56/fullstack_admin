@@ -64,6 +64,6 @@ router.get("/", getAllUsers);
 router.put("/:id", cookieTokenAuth, updateUser);
 router.delete("/:id", cookieTokenAuth, deleteUser);
 router.put("/:id/permission", test);
-// router.post("/:id/image", upload.any(), test);
+router.put("/:id/image", upload.any(), saveUserImage);
 
 export default router;

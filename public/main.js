@@ -32628,8 +32628,11 @@ var actions = {
         data.append(payload.id, payload.file[0]);
         console.log('Отправляемые данные: ', data);
         console.log('Необходимо вернуть объект со свойством path, которое хранит путь до сохраненного изображения.');
-        return fetch('/api/saveUserImage/' + payload.id, {
-            method: 'post',
+        return fetch(`/api/users/${payload.id}/image`, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+            method: 'put',
             body: data
         })
             .then(function (response) {
