@@ -61,9 +61,9 @@ const test = () => console.log("test");
 // router.post("/:id/image", upload.any(), saveUserImage);
 
 router.get("/", getAllUsers);
-router.put("/:id", test);
-// router.delete("/:id", cookieTokenAuth, test);
-// router.put("/:id/permission", cookieTokenAuth, test);
+router.put("/:id", cookieTokenAuth, updateUser);
+router.delete("/:id", cookieTokenAuth, deleteUser);
+router.put("/:id/permission", test);
 // router.post("/:id/image", upload.any(), test);
 
 export default router;

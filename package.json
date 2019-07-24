@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "cross-env-shell NODE_ENV=development nodemon --experimental-modules ./app.mjs",
     "start": "cross-env-shell NODE_ENV=production node --experimental-modules ./app.mjs",
+    "push": "git add . && git commit -m default && git push",
     "stop": "taskkill /F /IM node.exe"
   },
   "dependencies": {

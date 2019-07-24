@@ -63,8 +63,9 @@ export const saveUser = async (req, res) => {
 };
 
 export const loginUser = async (req, res) => {
-  const loginedUser = JSON.parse(req.body);
+  const loginedUser = req.body;
   const isLongLogined = Boolean(loginedUser.remembered);
+  console.log("check loginedUser, isLongLogined", loginedUser, isLongLogined);
 
   try {
     await validateUser(loginedUser);

@@ -40,6 +40,7 @@
 import express from "express";
 import userRouter from "./users.mjs";
 import authRouter from "./auth.mjs";
+// import newsRouter from "./news.mjs";
 import sendSPA from "../controllers/app/index.mjs";
 
 const router = express.Router();

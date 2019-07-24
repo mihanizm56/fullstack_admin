@@ -32492,9 +32492,9 @@ var actions = {
         return new Promise(function (resolve, reject) {
             console.log('PUT-запрос на /api/updateUserPermission/:id - обновление существующей записи о разрешениях');
             console.log('Отправляемые данные: ', payload);
-            return fetch('/api/updateUserPermission/' + payload.permissionId, {
+            return fetch(`/api/users/${payload.permissionId}/permission`, {
                 method: 'PUT',
-                body: JSON.stringify(payload)
+                body: payload
             })
                 .then(function (response) {
                 return response.json();
@@ -32521,7 +32521,10 @@ var actions = {
         console.log('Автоматический POST-запрос на /api/authFromToken - авторизация при наличии токена.');
         console.log('Отправляемые данные: ', payload);
         console.log('Необходимо вернуть объект авторизовавшегося пользователя!');
-        fetch('/api/authFromToken', {
+        fetch('/api/auth/token', {
+            headers: {
+              'Content-Type': 'application/json',
+            },
             method: 'POST',
             body: JSON.stringify({ access_token: payload })
         })
@@ -32556,9 +32559,11 @@ var actions = {
         console.log('POST-запрос на /api/login - авторизация после пользователького ввода.');
         console.log('Отправляемые данные: ', payload);
         console.log('Необходимо вернуть объект авторизовавшегося пользователя!');
-        return fetch('/api/login', {
+        return fetch('/api/auth', {
+            headers: {
+              'Content-Type': 'application/json',
+            },
             method: 'POST',
-            credentials: 'include',
             body: JSON.stringify(payload)
         })
             .then(function (response) {
