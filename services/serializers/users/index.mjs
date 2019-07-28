@@ -1,24 +1,13 @@
-export const getPermissionUsersData = arrayOfUsers =>
-  arrayOfUsers.map(
-    ({
-      username,
-      firstName,
-      surName,
-      middleName,
-      image,
-      permission,
-      _id: id
-    }) => ({
-      username,
-      firstName,
-      surName,
-      image,
-      middleName,
-      permission,
-      permissionId: id,
-      id
-    })
-  );
+export const userDataSerializer = item => ({
+  id: item._id,
+  username: item.username,
+  surName: item.surName || "",
+  firstName: item.firstName || "",
+  middleName: item.middleName || "",
+  image: item.image || "",
+  permission: item.permission,
+  permissionId: item._id
+});
 
 export const serializePermission = (prevPermission, nextPermissions) => ({
   chat: {
@@ -88,3 +77,25 @@ export const serializePermission = (prevPermission, nextPermissions) => ({
         : prevPermission.setting.D
   }
 });
+
+export const getPermissionUsersData = arrayOfUsers =>
+  arrayOfUsers.map(
+    ({
+      username,
+      firstName,
+      surName,
+      middleName,
+      image,
+      permission,
+      _id: id
+    }) => ({
+      username,
+      firstName,
+      surName,
+      image,
+      middleName,
+      permission,
+      permissionId: id,
+      id
+    })
+  );

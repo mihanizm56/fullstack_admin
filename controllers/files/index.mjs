@@ -28,6 +28,6 @@ export const saveUserImage = async (req, res) => {
     }
   } catch (error) {
     console.log("error in saveUserImage", error);
-    res.status(500).send("not valid date");
+    res.status(500).send();
   }
 };

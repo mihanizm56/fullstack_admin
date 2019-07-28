@@ -17,23 +17,10 @@ import {
 import {
   getPermissionUsersData,
   serializePermission
-} from "../../services/users/index.mjs";
+} from "../../services/serializers/users/index.mjs";
 import { createToken } from "../../services/tokens/index.mjs";
 import { mkdir, rename } from "../../services/promisify/index.mjs";
 import { photoValidation } from "../../services/validation/photo/index.mjs";
-
-export const resultItemConverter = item => {
-  return {
-    id: item._id,
-    username: item.username,
-    surName: item.surName || "",
-    firstName: item.firstName || "",
-    middleName: item.middleName || "",
-    image: item.image || "",
-    permission: item.permission,
-    permissionId: item._id
-  };
-};
 
 export const updateUser = async (req, res) => {
   const userDataToUpdate = req.body;

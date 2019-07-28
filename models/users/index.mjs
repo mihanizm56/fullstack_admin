@@ -4,7 +4,6 @@ import {
   makeHashedPassword,
   compareHashedPasswords
 } from "../../services/passwords/index.mjs";
-import { serializePermission } from "../../services/users/index.mjs";
 
 export const UserModel = mongoose.model("User");
 
