@@ -1,12 +1,12 @@
-export const userDataSerializer = item => ({
-  id: item._id,
-  username: item.username,
-  surName: item.surName || "",
-  firstName: item.firstName || "",
-  middleName: item.middleName || "",
-  image: item.image || "",
-  permission: item.permission,
-  permissionId: item._id
+export const userDataSerializer = userData => ({
+  id: userData.id,
+  username: userData.username,
+  surName: userData.surName || "",
+  firstName: userData.firstName || "",
+  middleName: userData.middleName || "",
+  image: userData.image || "",
+  permission: userData.permission,
+  permissionId: userData.id
 });
 
 export const serializePermission = (prevPermission, nextPermissions) => ({

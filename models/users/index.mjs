@@ -16,7 +16,7 @@ export const addUserInDb = userData => {
   return newUser;
 };
 
-export const getUserFromDbByUserName = ({ username }) =>
+export const getUserFromDbByUserName = username =>
   UserModel.findOne({ username });
 
 export const getUserFromDbById = _id => UserModel.findOne({ _id });

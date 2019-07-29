@@ -1,3 +1,4 @@
+import lodash from "lodash";
 import {
   addUserInDb,
   getUserFromDbByUserName,
@@ -11,29 +12,26 @@ import {
   compareHashedPasswords
 } from "../../services/passwords/index.mjs";
 import { createToken } from "../../services/tokens/index.mjs";
+import { userDataSerializer } from "../../services/serializers/users/index.mjs";
 
 export const saveUser = async (req, res) => {
-  const newUser = req.body;
-  console.log("check new user", newUser);
+  const { uniqueId } = lodash;
+  const newUserId = uniqueId(`${req.body.username}_`);
+  const serializedUserData = userDataSerializer({ ...req.body, id: newUserId });
+  const access_token = createToken(serializedUserData.id);
 
   try {
-    await validateUser({ ...newUser, image: newUser.img });
-    const user = await getUserFromDbByUserName(newUser);
+    await validateUser({ ...serializedUserData, password: req.body.password });
+    const user = await getUserFromDbByUserName(serializedUserData.username);
     if (user) {
       res.status(400).send("user exists");
     } else {
       try {
-        const {
-          username,
-          password,
-          firstName,
-          surName,
-          middleName,
-          image,
-          permission,
-          _id: id
-        } = await addUserInDb({ ...newUser, image: newUser.img }).save();
-        const access_token = createToken(id);
+        await addUserInDb({
+          ...serializedUserData,
+          password: req.body.password
+        }).save();
+
         res
           .cookie("access_token", access_token, {
             expires: new Date(Date.now() + 3 * 86400000),
@@ -41,15 +39,8 @@ export const saveUser = async (req, res) => {
           })
           .status(200)
           .send({
-            username,
-            firstName,
-            surName,
-            middleName,
-            id,
-            image,
-            permission,
-            access_token,
-            permissionId: id
+            ...serializedUserData,
+            access_token
           });
       } catch (error) {
         console.log(error);
@@ -65,27 +56,19 @@ export const saveUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   const loginedUser = req.body;
   const isLongLogined = Boolean(loginedUser.remembered);
-  console.log("check loginedUser, isLongLogined", loginedUser, isLongLogined);
 
   try {
     await validateUser(loginedUser);
-    const {
-      username,
-      password,
-      firstName,
-      surName,
-      middleName,
-      image,
-      permission,
-      _id: id
-    } = await getUserFromDbByUserName(loginedUser);
+
+    const userData = await getUserFromDbByUserName(loginedUser.username);
+    const serializedUserData = userDataSerializer(userData);
+    const access_token = createToken(serializedUserData.id);
     const comparePasswords = compareHashedPasswords(
       makeHashedPassword(loginedUser.password),
-      password
+      userData.password
     );
 
-    if (username && comparePasswords) {
-      const access_token = createToken(id);
+    if (comparePasswords) {
       res
         .cookie("access_token", access_token, {
           expires: isLongLogined
@@ -95,48 +78,29 @@ export const loginUser = async (req, res) => {
         })
         .status(200)
         .send({
-          username,
-          firstName,
-          surName,
-          middleName,
-          id,
-          image,
-          permission,
-          access_token,
-          permissionId: id
+          ...serializedUserData,
+          access_token
         });
     } else {
+      console.log(error);
       res.status(401).send("user not valid");
     }
   } catch (error) {
+    console.log(error);
+
     res.status(400).send("not valid user data");
   }
 };
 
 export const tokenAuth = async (req, res) => {
-  // console.log("token user id", res.locals.userTokenData);
   const { user: userId } = res.locals.userTokenData;
   try {
-    const {
-      username,
-      firstName,
-      surName,
-      middleName,
-      image,
-      permission,
-      _id: id
-    } = await getUserFromDbById(userId);
+    const userData = await getUserFromDbById(userId);
+    const serializedUserData = userDataSerializer(userData);
     const access_token = createToken(userId);
     res.status(200).send({
-      username,
-      firstName,
-      surName,
-      middleName,
-      id,
-      image,
-      permission,
-      access_token,
-      permissionId: id
+      ...serializedUserData,
+      access_token
     });
   } catch (error) {
     console.log("get error", error);

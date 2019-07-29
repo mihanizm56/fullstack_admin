@@ -7,13 +7,16 @@ export default Joi.object().keys({
     .required(),
   firstName: Joi.string()
     .min(0)
-    .max(20),
+    .max(20)
+    .allow(""),
   surName: Joi.string()
     .min(0)
-    .max(20),
+    .max(20)
+    .allow(""),
   middleName: Joi.string()
     .min(0)
-    .max(20),
+    .max(20)
+    .allow(""),
   password: Joi.string()
     .min(1)
     .max(20)
