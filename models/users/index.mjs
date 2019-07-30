@@ -22,7 +22,6 @@ export const getUserFromDbByUserName = username =>
 export const getUserFromDbById = _id => UserModel.findOne({ _id });
 
 export const updateUserFromDb = (userId, userData) =>
-  console.log("") ||
   UserModel.findOneAndUpdate(
     { _id: userId },
     {
