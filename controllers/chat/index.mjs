@@ -1,40 +1,31 @@
 import socket from "socket.io";
 
-let users = [];
+let clients = {};
 
 const chatServer = server => {
-  const io = socket(server);
+  const io = require("socket.io")(server);
 
-  io.on("connection", socket => {
-    let id = socket.id;
-    let user = {
-      id,
-      username: socket.handshake.headers.username || "Guest"
+  io.on("connection", client => {
+    const clientId = client.id;
+    const userData = {
+      id: clientId,
+      username: client.request.headers.username
     };
-    !users.some(u => u.id === user.id) && users.push(user);
-    //users[id] = user;
-    console.log("User connected to chat: " + id);
-    let usersObj = {};
-    users.forEach(u => {
-      if (u.id !== id) {
-        usersObj[u.id] = u;
-      }
-    });
-    socket.emit("all users", usersObj);
-    socket.broadcast.emit("new user", user);
 
-    socket.on("chat message", (data, recipientUserId) => {
-      if (io.sockets.connected[recipientUserId]) {
-        io.to(recipientUserId).emit("chat message", data, user.id);
-      }
-    });
+    clients[clientId] = userData;
+    client.emit("all users", clients);
+    client.broadcast.emit("new user", userData);
 
-    socket.on("disconnect", data => {
-      console.log("User disconnected from chat: " + id);
-      //delete users[id];
-      users = users.filter(u => u.id !== id);
+    client.on(
+      "chat message",
+      (message, sendToId) =>
+        sendToId !== clientId &&
+        io.to(sendToId).emit("chat message", message, clientId)
+    );
 
-      socket.broadcast.emit("delete user", id);
+    client.on("disconnect", () => {
+      client.broadcast.json.emit("delete user", clientId);
+      delete clients[clientId];
     });
   });
 };
