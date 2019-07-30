@@ -45,20 +45,12 @@ import sendSPA from "../controllers/app/index.mjs";
 
 const router = express.Router();
 
-// import newsRouter from "./news.mjs";
-// import filesRouter from "./files.mjs";
-
-const test = () => console.log("test");
-
+// rest
 router.use("/api/users", userRouter);
 router.use("/api/auth", authRouter);
 router.use("/api/news", newsRouter);
-// router.use("/api/files", filesRouter);
-// router.use("/api/users", test);
-// router.use("/api/news", test);
 
 /// send spa
 router.get("*", sendSPA.get);
-////
 
 export default router;
