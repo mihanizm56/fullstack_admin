@@ -33,12 +33,7 @@ export const updateUser = async (req, res) => {
     if (user) {
       try {
         const userFullData = {
-          username: user.username,
-          firstName: user.firstName,
-          surName: user.surName,
-          middleName: user.middleName,
-          permission: user.permission,
-          password: userDataToUpdate.password || user.password,
+          ...user,
           ...userDataToUpdate
         };
         const access_token = createToken(user._id);
@@ -59,7 +54,7 @@ export const updateUser = async (req, res) => {
 };
 
 export const deleteUser = async (req, res) => {
-  // const userId = req.params;
+  const userId = req.params;
   // console.log("check id of user to delete", userId);
 
   try {
@@ -72,8 +67,6 @@ export const deleteUser = async (req, res) => {
 };
 
 export const getAllUsers = async (req, res) => {
-  // console.log("send all users");
-
   try {
     const users = await getAllUsersFromDb();
     const permissionUsersData = getPermissionUsersData(users);
@@ -90,12 +83,6 @@ export const getAllUsers = async (req, res) => {
 export const updateUserPermissions = async (req, res) => {
   const userId = req.params.id;
   const userDataToUpdate = req.body;
-  // const {
-  //   permission:{
-  //     chat:{C=false,R=false,U=false,D=false},
-  //     news:{C=false,R=false,U=false,D=false},
-  //     setting:{C=false,R=false,U=false,D=false}
-  //   } = userDataToUpdate
 
   try {
     const user = await getUserFromDbById(userId);
@@ -103,12 +90,6 @@ export const updateUserPermissions = async (req, res) => {
       user.permission,
       userDataToUpdate.permission
     );
-
-    // console.log(
-    //   "///////////////////////",
-    //   user.permission,
-    //   userDataToUpdate.permission
-    // );
 
     await updateUserPermissionsDb(userId, newPermissions);
     res.status(200).send(true);

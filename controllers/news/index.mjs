@@ -20,17 +20,19 @@ export const getNews = async (req, res) => {
       const userId = item.userId;
       const newsData = pick(item, ["theme", "date", "text"]);
       const userData = await getUserFromDbById(userId);
-      const { password, ...restUserData } = userData;
-      const access_token = createToken(userData.id);
+      if (userData && userData.username) {
+        const { password = "", ...restUserData } = userData;
+        const access_token = createToken(userData._id);
 
-      return {
-        ...newsData,
-        id: item._id,
-        user: {
-          access_token,
-          ...restUserData
-        }
-      };
+        return {
+          ...newsData,
+          id: item._id,
+          user: {
+            access_token,
+            restUserData
+          }
+        };
+      }
     });
 
     const newsResult = await Promise.all(result);
@@ -63,17 +65,19 @@ export const newNews = async (req, res) => {
           const userId = item.userId;
           const newsData = pick(item, ["theme", "date", "text"]);
           const userData = await getUserFromDbById(userId);
-          const { password, ...restUserData } = userData;
-          const access_token = createToken(userData._id);
+          if (userData && userData.username) {
+            const { password = "", ...restUserData } = userData;
+            const access_token = createToken(userData._id);
 
-          return {
-            ...newsData,
-            id: item._id,
-            user: {
-              access_token,
-              ...restUserData
-            }
-          };
+            return {
+              ...newsData,
+              id: item._id,
+              user: {
+                access_token,
+                restUserData
+              }
+            };
+          }
         });
 
         const newsResult = await Promise.all(result);
@@ -104,17 +108,19 @@ export const updateNews = async (req, res) => {
       const userId = item.userId;
       const newsData = pick(item, ["theme", "date", "text"]);
       const userData = await getUserFromDbById(userId);
-      const { password, ...restUserData } = userData;
-      const access_token = createToken(userData._id);
+      if (userData && userData.username) {
+        const { password = "", ...restUserData } = userData;
+        const access_token = createToken(userData._id);
 
-      return {
-        ...newsData,
-        id: item._id,
-        user: {
-          access_token,
-          restUserData
-        }
-      };
+        return {
+          ...newsData,
+          id: item._id,
+          user: {
+            access_token,
+            restUserData
+          }
+        };
+      }
     });
 
     const newsResult = await Promise.all(result);
