@@ -4,6 +4,7 @@ import cluster from "cluster";
 import { port, dbURL } from "./services/variables/index.mjs";
 import "./services/db-listeners/index.mjs";
 import createError from "http-errors";
+import helmet from "helmet";
 import mongoose from "mongoose";
 import cors from "cors";
 import express from "express";
@@ -14,33 +15,38 @@ import bodyParser from "body-parser";
 import http_server from "http";
 import router from "./routes/root.mjs";
 import startChat from "./controllers/chat/index.mjs";
+import rateLimit from "express-rate-limit";
 
 /// prepare config for server
 dotenv.config();
 const app = express();
 const server = http_server.createServer(app);
+const limiter = rateLimit({
+  windowMs: 10 * 1000, // 10 seconds
+  max: 1000 // limit each IP requests per windowMs
+});
 
+/// middlewares
+app.use(limiter);
+app.use(helmet());
 app.use(cors({ origin: "*" }));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-
 app.use(express.static(path.join(process.cwd(), "public")));
-
 app.use("/", router);
-
 app.use((req, res, next) => {
   next(createError(404));
 });
-
 app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
   res.status(err.status || 500);
 });
 
+/// func to run server
 const startServer = (ownServer, ownPort) =>
   new Promise((resolve, reject) => {
     try {

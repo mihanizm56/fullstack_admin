@@ -3,7 +3,7 @@ import socket from "socket.io";
 let clients = {};
 
 const chatServer = server => {
-  const io = require("socket.io")(server);
+  const io = socket(server);
 
   io.on("connection", client => {
     const clientId = client.id;
