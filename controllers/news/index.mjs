@@ -19,27 +19,16 @@ export const getNews = async (req, res) => {
     const result = news.map(async item => {
       const userId = item.userId;
       const newsData = pick(item, ["theme", "date", "text"]);
-      const userData = pick(await getUserFromDbById(userId), [
-        "username",
-        "firstName",
-        "surName",
-        "middleName",
-        "image"
-      ]);
-      const access_token = createToken(userData._id);
+      const userData = await getUserFromDbById(userId);
+      const { password, ...restUserData } = userData;
+      const access_token = createToken(userData.id);
 
       return {
         ...newsData,
         id: item._id,
         user: {
-          access_token: access_token || "",
-          username: userData.username || "",
-          firstName: userData.firstName || "",
-          surName: userData.surName || "",
-          middleName: userData.middleName || "",
-          id: userId || "",
-          image: userData.image || "",
-          permission: userData.permission || ""
+          access_token,
+          ...restUserData
         }
       };
     });
@@ -73,28 +62,16 @@ export const newNews = async (req, res) => {
         const result = news.map(async item => {
           const userId = item.userId;
           const newsData = pick(item, ["theme", "date", "text"]);
-          const userData = pick(await getUserFromDbById(userId), [
-            "username",
-            "firstName",
-            "surName",
-            "middleName",
-            "image"
-          ]);
-
+          const userData = await getUserFromDbById(userId);
+          const { password, ...restUserData } = userData;
           const access_token = createToken(userData._id);
 
           return {
             ...newsData,
             id: item._id,
             user: {
-              access_token: access_token || "",
-              username: userData.username || "",
-              firstName: userData.firstName || "",
-              surName: userData.surName || "",
-              middleName: userData.middleName || "",
-              id: userId || "",
-              image: userData.image || "",
-              permission: userData.permission || ""
+              access_token,
+              ...restUserData
             }
           };
         });
@@ -114,9 +91,9 @@ export const newNews = async (req, res) => {
 };
 
 export const updateNews = async (req, res) => {
-  const updateNew = req.body;
+  const newToUpdate = req.body;
   const { theme, text, userId, date, id } = newToUpdate;
-  // console.log("check data of updated new", newToUpdate);
+  // console.log("check data of updated new", updateNew);
   try {
     await validateNews({ theme, text, userId, date });
     await updateNew(newToUpdate);
@@ -126,28 +103,16 @@ export const updateNews = async (req, res) => {
     const result = news.map(async item => {
       const userId = item.userId;
       const newsData = pick(item, ["theme", "date", "text"]);
-      const userData = pick(await getUserFromDbById(userId), [
-        "username",
-        "firstName",
-        "surName",
-        "middleName",
-        "image"
-      ]);
-
+      const userData = await getUserFromDbById(userId);
+      const { password, ...restUserData } = userData;
       const access_token = createToken(userData._id);
 
       return {
         ...newsData,
         id: item._id,
         user: {
-          access_token: access_token || "",
-          username: userData.username || "",
-          firstName: userData.firstName || "",
-          surName: userData.surName || "",
-          middleName: userData.middleName || "",
-          id: userId || "",
-          image: userData.image || "",
-          permission: userData.permission || ""
+          access_token,
+          restUserData
         }
       };
     });

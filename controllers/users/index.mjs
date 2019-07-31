@@ -119,8 +119,7 @@ export const updateUserPermissions = async (req, res) => {
 };
 
 export const saveUserImage = async (req, res) => {
-  // console.log("start upload photo", req.files);
-  const fileToUpload = req.files[0]; ///////////////////////////////////////////////////govno
+  const fileToUpload = req.files[0];
   const userId = req.params;
   const { originalname: photoName, size, buffer, filename } = fileToUpload;
   const staticPath = path.join("upload");
