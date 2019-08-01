@@ -7,6 +7,8 @@ import {
 
 export const UserModel = mongoose.model("User");
 
+export const getUserFromDbById = _id => UserModel.findOne({ _id });
+
 export const addUserInDb = userData => {
   const newUser = new UserModel({
     ...userData,
@@ -18,8 +20,6 @@ export const addUserInDb = userData => {
 
 export const getUserFromDbByUserName = username =>
   UserModel.findOne({ username });
-
-export const getUserFromDbById = _id => UserModel.findOne({ _id });
 
 export const updateUserFromDb = (userId, userData) =>
   UserModel.findOneAndUpdate(

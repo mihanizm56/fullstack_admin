@@ -5,41 +5,13 @@ import {
   updateNew,
   deleteNew
 } from "../../models/news/index.mjs";
-import lodash from "lodash";
 import { validateNews } from "../../services/validation/news/index.mjs";
-import { getUserFromDbById } from "../../models/users/index.mjs";
-import { createToken } from "../../services/tokens/index.mjs";
-
-const { pick } = lodash;
+import { getNewsFromDB } from "./get-news.mjs";
 
 export const getNews = async (req, res) => {
   try {
-    const news = await getAllNews();
-
-    const result = news.map(async item => {
-      console.log("item", item);
-
-      const userId = item.userId;
-      const newsData = pick(item, ["theme", "date", "text"]);
-      const userData = await getUserFromDbById(userId);
-      console.log("userData", userData);
-      if (userData && userData.username) {
-        const { password = "", ...restUserData } = userData;
-        const access_token = createToken(userData._id);
-
-        return {
-          ...newsData,
-          id: item._id,
-          user: {
-            ...restUserData
-          }
-        };
-      }
-    });
-
-    const newsResult = await Promise.all(result);
-
-    res.status(200).send(newsResult);
+    const newsFromDb = await getNewsFromDB();
+    res.status(200).send(newsFromDb);
   } catch (error) {
     console.log("error when getting news", error);
   }
@@ -51,40 +23,24 @@ export const newNews = async (req, res) => {
   console.log("check data of new", newNew);
 
   try {
-    // await validateNews(newNew);
     const existsNew = await getNew(newNew);
     if (existsNew) {
-      // console.log("there is a new in db");
+      console.log("there is a new in db");
       res.status(400).send("new exists");
     } else {
       try {
-        // console.log("add the new in db");
+        await validateNews(newNew);
+      } catch (error) {
+        console.log("not valid data", error);
+        return res.status(400).send("not valid user data");
+      }
+
+      try {
         await addNew(newNew).save();
+        console.log("added the new in db");
+        const newsFromDb = await getNewsFromDB();
 
-        const news = await getAllNews();
-
-        const result = news.map(async item => {
-          const userId = item.userId;
-          const newsData = pick(item, ["theme", "date", "text"]);
-          const userData = await getUserFromDbById(userId);
-          if (userData && userData.username) {
-            const { password = "", ...restUserData } = userData;
-            const access_token = createToken(userData._id);
-
-            return {
-              ...newsData,
-              id: item._id,
-              user: {
-                access_token,
-                restUserData
-              }
-            };
-          }
-        });
-
-        const newsResult = await Promise.all(result);
-
-        res.status(200).send(newsResult);
+        res.status(200).send(newsFromDb);
       } catch (error) {
         console.log("not valid data", error);
         res.status(400).send("not valid user data");
@@ -103,31 +59,9 @@ export const updateNews = async (req, res) => {
   try {
     await validateNews({ theme, text, userId, date });
     await updateNew(newToUpdate);
-    // console.log("new user data is updated");
-    const news = await getAllNews();
+    const newsFromDb = await getNewsFromDB();
 
-    const result = news.map(async item => {
-      const userId = item.userId;
-      const newsData = pick(item, ["theme", "date", "text"]);
-      const userData = await getUserFromDbById(userId);
-      if (userData && userData.username) {
-        const { password = "", ...restUserData } = userData;
-        const access_token = createToken(userData._id);
-
-        return {
-          ...newsData,
-          id: item._id,
-          user: {
-            access_token,
-            restUserData
-          }
-        };
-      }
-    });
-
-    const newsResult = await Promise.all(result);
-
-    res.status(200).send(newsResult);
+    res.status(200).send(newsFromDb);
   } catch (error) {
     console.log("new user data was not updated", error);
     res.status(400).send("not valid user data");
@@ -136,13 +70,13 @@ export const updateNews = async (req, res) => {
 
 export const deleteNews = async (req, res) => {
   const deleteNewData = req.params;
-  // console.log("check data of delete new", deleteNewData);
 
   try {
     await deleteNew(deleteNewData);
-    const updatedNews = await getAllNews();
+    const news = await getAllNews();
+    const newsFromDb = await getNewsFromDB();
 
-    res.status(200).send(updatedNews);
+    res.status(200).send(newsFromDb);
   } catch (error) {
     console.log("not valid data", error);
 
