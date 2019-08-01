@@ -24,3 +24,6 @@ export const updateNew = newData =>
   );
 
 export const deleteNew = ({ id }) => NewsModel.findByIdAndRemove({ _id: id });
+
+export const deleteNewByUserId = ({ userId }) =>
+  NewsModel.findOneAndRemove({ userId });

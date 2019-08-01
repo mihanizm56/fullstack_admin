@@ -17,9 +17,12 @@ export const getNews = async (req, res) => {
     const news = await getAllNews();
 
     const result = news.map(async item => {
+      console.log("item", item);
+
       const userId = item.userId;
       const newsData = pick(item, ["theme", "date", "text"]);
       const userData = await getUserFromDbById(userId);
+      console.log("userData", userData);
       if (userData && userData.username) {
         const { password = "", ...restUserData } = userData;
         const access_token = createToken(userData._id);
@@ -28,8 +31,7 @@ export const getNews = async (req, res) => {
           ...newsData,
           id: item._id,
           user: {
-            access_token,
-            restUserData
+            ...restUserData
           }
         };
       }

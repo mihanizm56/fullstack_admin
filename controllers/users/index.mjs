@@ -9,6 +9,7 @@ import {
   updateUserPermissionsDb,
   savePhotoToUser
 } from "../../models/users/index.mjs";
+import { deleteNewByUserId } from "../../models/news/index.mjs";
 import { validateUser } from "../../services/validation/user/index.mjs";
 import {
   makeHashedPassword,
@@ -54,11 +55,12 @@ export const updateUser = async (req, res) => {
 };
 
 export const deleteUser = async (req, res) => {
-  const userId = req.params;
-  // console.log("check id of user to delete", userId);
+  const { id } = req.params;
+  console.log("check id of user to delete", id);
 
   try {
-    await deleteUserByIdFromDb(userId);
+    await deleteUserByIdFromDb({ id });
+    await deleteNewByUserId({ userId: id });
     res.status(200).send("success");
   } catch (error) {
     console.log("not valid data", error);
