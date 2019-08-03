@@ -5,7 +5,7 @@ const timeAccessTokenExpires = process.env.TIME_TO_EXPIRE;
 
 export const createToken = userId =>
   jwt.sign({ user: userId }, jwt_secret_key, {
-    expiresIn: `${timeAccessTokenExpires}s`
+    expiresIn: `${timeAccessTokenExpires}h`
   });
 
 export const tokenVerify = (token, callback) =>

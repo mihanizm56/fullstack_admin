@@ -22,7 +22,7 @@ import {
   serializePermission
 } from "../../services/serializers/users/index.mjs";
 import { createToken } from "../../services/tokens/index.mjs";
-import { mkdir, rename } from "../../services/promisify/index.mjs";
+import { mkdir, rename, removef } from "../../services/promisify/index.mjs";
 import { photoValidation } from "../../services/validation/photo/index.mjs";
 import { userDataSerializer } from "../../services/serializers/users/index.mjs";
 import { deleteFile } from "../../utils/index.mjs";
@@ -61,16 +61,34 @@ export const updateUser = async (req, res) => {
 };
 
 export const deleteUser = async (req, res) => {
-  const { id } = req.params;
-  console.log("check id of user to delete", id);
+  const { id: userId } = req.params;
+  console.log("check id of user to delete", userId);
 
   try {
-    await deleteUserByIdFromDb({ id });
-    await deleteNewByUserId({ userId: id });
+    const userData = await getUserFromDbById(userId);
+    console.log("check userData of user to delete", userData);
+    const serializedUserData = userDataSerializer(userData);
+    const prevUserPhotoName = path.basename(serializedUserData.image);
+    const prevUserImage = path.join(
+      process.cwd(),
+      "public",
+      "upload",
+      userId,
+      prevUserPhotoName
+    );
+    const dirForUser = path.join(process.cwd(), "public", "upload", userId);
+
+    try {
+      await access(dirForUser);
+      await removef(dirForUser);
+    } catch (error) {}
+
+    await deleteUserByIdFromDb({ id: userId });
+    await deleteNewByUserId({ userId });
     res.status(200).send("success");
   } catch (error) {
-    console.log("not valid data", error);
-    res.status(400).send("delete error");
+    console.log("internal server error", error);
+    res.status(500).send("internal server error");
   }
 };
 
@@ -111,11 +129,19 @@ export const saveUserImage = async (req, res) => {
   const { id: userId } = req.params;
   const userImage = req.file;
   const { originalname: photoName, filename, path: imagePath } = userImage;
-  const staticPathToFile = path.join("upload", photoName);
   const uploadDir = path.join(process.cwd(), "public", "upload");
-  const fileNameToSave = path.join(uploadDir, photoName);
+  const dirForUser = path.join(process.cwd(), "public", "upload", userId);
 
   try {
+    try {
+      await access(dirForUser);
+    } catch (error) {
+      await mkdir(dirForUser);
+    }
+
+    const staticPathToFile = path.join("upload", userId, photoName);
+    const fileNameToSave = path.join(uploadDir, userId, photoName);
+
     await photoValidation(userImage);
     await rename(imagePath, fileNameToSave);
 
@@ -127,10 +153,13 @@ export const saveUserImage = async (req, res) => {
 
     const userData = await getUserFromDbById(userId);
     const serializedUserData = userDataSerializer(userData);
+    const prevUserPhotoName = path.basename(serializedUserData.image);
     const prevUserImage = path.join(
       process.cwd(),
       "public",
-      serializedUserData.image
+      "upload",
+      userId,
+      prevUserPhotoName
     );
     const newData = { ...serializedUserData, image: staticPathToFile };
 

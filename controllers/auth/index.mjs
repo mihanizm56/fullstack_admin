@@ -15,9 +15,7 @@ import { createToken } from "../../services/tokens/index.mjs";
 import { userDataSerializer } from "../../services/serializers/users/index.mjs";
 
 export const saveUser = async (req, res) => {
-  const { uniqueId } = lodash;
-  const newUserId = uniqueId(`${req.body.username}_`);
-  const serializedUserData = userDataSerializer({ ...req.body, id: newUserId });
+  const serializedUserData = userDataSerializer({ ...req.body });
   const access_token = createToken(serializedUserData.id);
 
   try {
@@ -32,6 +30,11 @@ export const saveUser = async (req, res) => {
           password: req.body.password
         }).save();
 
+        const savedUserData = await getUserFromDbByUserName(
+          serializedUserData.username
+        );
+        const savedUserId = savedUserData._id;
+
         res
           .cookie("access_token", access_token, {
             expires: new Date(Date.now() + 3 * 86400000),
@@ -40,6 +43,7 @@ export const saveUser = async (req, res) => {
           .status(200)
           .send({
             ...serializedUserData,
+            id: savedUserId,
             access_token
           });
       } catch (error) {

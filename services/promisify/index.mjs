@@ -6,6 +6,7 @@ import {
   unlink as nativeUnlink,
   access as nativeAccess
 } from "fs";
+import rimraf from "rimraf";
 import { promisify } from "util";
 
 export const readFile = promisify(nativeReadFile);
@@ -14,3 +15,4 @@ export const rename = promisify(nativeRename);
 export const lstat = promisify(nativeLstat);
 export const unlink = promisify(nativeUnlink);
 export const access = promisify(nativeAccess);
+export const removef = promisify(rimraf);
