@@ -1,4 +1,6 @@
 import path from "path";
+import Jimp from "jimp";
+import { unlink } from "../../services/promisify/index.mjs";
 import {
   addUserInDb,
   getUserFromDbByUserName,
@@ -22,25 +24,29 @@ import {
 import { createToken } from "../../services/tokens/index.mjs";
 import { mkdir, rename } from "../../services/promisify/index.mjs";
 import { photoValidation } from "../../services/validation/photo/index.mjs";
+import { userDataSerializer } from "../../services/serializers/users/index.mjs";
 
 export const updateUser = async (req, res) => {
-  const userDataToUpdate = req.body;
   const userId = req.params.id;
-  console.log("update user data", userId, userDataToUpdate);
+  const { password, ...newUserData } = req.body;
+  console.log("update user data", userId, newUserData);
 
   try {
     const user = await getUserFromDbById(userId);
+    const serializedUser = userDataSerializer(user);
 
     if (user) {
       try {
-        const userFullData = {
-          ...user,
-          ...userDataToUpdate
-        };
+        const newPassword = makeHashedPassword(password);
         const access_token = createToken(user._id);
+        const userDataToSend = { ...serializedUser, ...newUserData };
+        const userFullData = {
+          userDataToSend,
+          password: newPassword
+        };
 
         await updateUserFromDb(userId, userFullData);
-        res.status(200).send({ ...userFullData, access_token });
+        res.status(200).send({ ...userDataToSend, access_token });
       } catch (error) {
         console.log("///////////////////", error);
         res.status(400).send("not valid user data");
@@ -102,19 +108,33 @@ export const updateUserPermissions = async (req, res) => {
 };
 
 export const saveUserImage = async (req, res) => {
-  const fileToUpload = req.files[0];
   const userId = req.params;
-  const { originalname: photoName, size, buffer, filename } = fileToUpload;
-  const staticPath = path.join("upload");
-  const staticPathToFile = path.join(staticPath, photoName);
-  const uploadDir = path.join(process.cwd(), "/public", staticPath);
+  const userImage = req.file;
+  const {
+    originalname: photoName,
+    filename,
+    path: imagePath,
+    buffer
+  } = userImage;
+  const staticPathToFile = path.join("/upload", photoName);
+  const uploadDir = path.join(process.cwd(), "/public", "upload");
+  const fileNameToSave = path.join(uploadDir, photoName);
 
   try {
-    await photoValidation(fileToUpload);
-    await rename(
-      path.join(uploadDir, filename),
-      path.join(uploadDir, photoName)
-    );
+    await photoValidation(userImage);
+    await rename(imagePath, fileNameToSave);
+
+    try {
+      const photo = await Jimp.read(fileNameToSave);
+
+      photo
+        .resize(480, 640)
+        .quality(80)
+        .write(fileNameToSave);
+    } catch (error) {
+      console.log("error when optimizing photo", error);
+      res.status(500).send("internal error");
+    }
 
     try {
       savePhotoToUser({ userId, src: staticPathToFile });
@@ -125,6 +145,6 @@ export const saveUserImage = async (req, res) => {
     }
   } catch (error) {
     console.log("error in saveUserImage", error);
-    res.status(500).send("not valid date");
+    res.status(500).send("internal error");
   }
 };

@@ -22,14 +22,7 @@ export const getUserFromDbByUserName = username =>
   UserModel.findOne({ username });
 
 export const updateUserFromDb = (userId, userData) =>
-  UserModel.findOneAndUpdate(
-    { _id: userId },
-    {
-      ...userData,
-      password: makeHashedPassword(userData.password)
-    },
-    { overwrite: false }
-  );
+  UserModel.findOneAndUpdate({ _id: userId }, userData, { overwrite: false });
 
 export const updateUserPermissionsDb = (userId, newPermissions) =>
   UserModel.findOneAndUpdate(

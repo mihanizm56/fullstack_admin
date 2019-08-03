@@ -32646,7 +32646,7 @@ var actions = {
         var commit = _a.commit;
         console.log('POST-запрос на /api/users/:id/image - сохранение изображения пользователя.');
         var data = new FormData();
-        data.append(payload.id, payload.file[0]);
+        data.append('photo', payload.file[0]);
         console.log('Отправляемые данные: ', data);
         console.log('Необходимо вернуть объект со свойством path, которое хранит путь до сохраненного изображения.');
         return fetch(`/api/users/${payload.id}/image`, {
