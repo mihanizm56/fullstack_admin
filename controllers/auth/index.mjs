@@ -94,6 +94,7 @@ export const loginUser = async (req, res) => {
 
 export const tokenAuth = async (req, res) => {
   const { user: userId } = res.locals.userTokenData;
+
   try {
     const userData = await getUserFromDbById(userId);
     const serializedUserData = userDataSerializer(userData);

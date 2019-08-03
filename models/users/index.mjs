@@ -36,10 +36,9 @@ export const deleteUserByIdFromDb = ({ id: _id }) =>
 
 export const getAllUsersFromDb = () => UserModel.find();
 
-export const savePhotoToUser = ({ userId, src }) => {
+export const savePhotoToUser = ({ userId, src }) =>
   UserModel.findOneAndUpdate(
     { id: userId },
     { image: src },
     { overwrite: false }
   );
-};
