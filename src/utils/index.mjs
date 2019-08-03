@@ -1,4 +1,4 @@
-import { access, unlink } from "../services/promisify/index.mjs";
+import { access, unlink } from "../utils/promisify/index.mjs";
 
 export const deleteFile = async filePath => {
   try {

@@ -1,5 +1,5 @@
 import path from "path";
-import { readFile } from "../../services/promisify/index.mjs";
+import { readFile } from "../../utils/promisify/index.mjs";
 
 const get = async (req, res) => {
   const pathToHTML = path.join(process.cwd(), "public", "index.html");

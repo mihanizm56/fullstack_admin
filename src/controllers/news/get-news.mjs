@@ -1,7 +1,7 @@
 import lodash from "lodash";
 import { getAllNews } from "../../models/news/index.mjs";
 import { getUserFromDbById } from "../../models/users/index.mjs";
-import { userDataSerializer } from "../../services/serializers/users/index.mjs";
+import { userDataSerializer } from "../../utils/serializers/users/index.mjs";
 
 export const getNewsFromDB = async () => {
   const { pick } = lodash;

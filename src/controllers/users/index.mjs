@@ -1,6 +1,12 @@
 import path from "path";
 import Jimp from "jimp";
-import { access, unlink } from "../../services/promisify/index.mjs";
+import {
+  access,
+  unlink,
+  mkdir,
+  rename,
+  removef
+} from "../../utils/promisify/index.mjs";
 import {
   addUserInDb,
   getUserFromDbByUserName,
@@ -13,6 +19,7 @@ import {
 } from "../../models/users/index.mjs";
 import { deleteNewByUserId } from "../../models/news/index.mjs";
 import { validateUser } from "../../services/validation/user/index.mjs";
+import { photoValidation } from "../../services/validation/photo/index.mjs";
 import {
   makeHashedPassword,
   compareHashedPasswords
@@ -22,9 +29,7 @@ import {
   serializePermission
 } from "../../services/serializers/users/index.mjs";
 import { createToken } from "../../services/tokens/index.mjs";
-import { mkdir, rename, removef } from "../../services/promisify/index.mjs";
-import { photoValidation } from "../../services/validation/photo/index.mjs";
-import { userDataSerializer } from "../../services/serializers/users/index.mjs";
+import { userDataSerializer } from "../../utils/serializers/users/index.mjs";
 import { deleteFile } from "../../utils/index.mjs";
 
 export const updateUser = async (req, res) => {

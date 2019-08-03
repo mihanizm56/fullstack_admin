@@ -1,4 +1,3 @@
-import lodash from "lodash";
 import {
   addUserInDb,
   getUserFromDbByUserName,
@@ -12,7 +11,7 @@ import {
   compareHashedPasswords
 } from "../../services/passwords/index.mjs";
 import { createToken } from "../../services/tokens/index.mjs";
-import { userDataSerializer } from "../../services/serializers/users/index.mjs";
+import { userDataSerializer } from "../../utils/serializers/users/index.mjs";
 
 export const saveUser = async (req, res) => {
   const serializedUserData = userDataSerializer({ ...req.body });
@@ -59,12 +58,15 @@ export const saveUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {
   const loginedUser = req.body;
+  console.log("get in the body", loginedUser);
+
   const isLongLogined = Boolean(loginedUser.remembered);
 
   try {
     await validateUser(loginedUser);
 
     const userData = await getUserFromDbByUserName(loginedUser.username);
+    console.log("get from the db", userData);
     const serializedUserData = userDataSerializer(userData);
     const access_token = createToken(serializedUserData.id);
     const comparePasswords = compareHashedPasswords(
