@@ -12,6 +12,6 @@ deploy:
   api_key:
     secure: $key
   strategy: git
-  app: node-loftschool
+  app: admin-panel-express
   on:
     branch: master
