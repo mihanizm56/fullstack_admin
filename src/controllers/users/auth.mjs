@@ -58,8 +58,6 @@ export const saveUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {
   const loginedUser = req.body;
-  console.log("get in the body", loginedUser);
-
   const isLongLogined = Boolean(loginedUser.remembered);
 
   try {
