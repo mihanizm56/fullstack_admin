@@ -1,5 +1,5 @@
 import express from "express";
-import { saveUser, loginUser, tokenAuth } from "../controllers/auth/index.mjs";
+import { saveUser, loginUser, tokenAuth } from "../controllers/users/auth.mjs";
 import { cookieTokenAuth } from "../middlewares/auth/index.mjs";
 
 const router = express.Router();

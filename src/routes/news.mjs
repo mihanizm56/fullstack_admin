@@ -4,7 +4,7 @@ import {
   newNews,
   updateNews,
   deleteNews
-} from "../controllers/news/index.mjs";
+} from "../controllers/news/news.mjs";
 import { cookieTokenAuth } from "../middlewares/auth/index.mjs";
 
 const router = express.Router();

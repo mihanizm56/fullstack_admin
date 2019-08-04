@@ -14,7 +14,7 @@ import logger from "morgan";
 import bodyParser from "body-parser";
 import http_server from "http";
 import router from "./routes/root.mjs";
-import startChat from "./controllers/chat/index.mjs";
+import startChat from "./controllers/chat/chat.mjs";
 import rateLimit from "express-rate-limit";
 
 /// prepare config for server

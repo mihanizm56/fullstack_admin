@@ -70,10 +70,15 @@ export const deleteUser = async (req, res) => {
   console.log("check id of user to delete", userId);
 
   try {
+    const adminUserData = await getUserFromDbById(
+      res.locals.userTokenData.user
+    );
     const userData = await getUserFromDbById(userId);
-    console.log("check userData of user to delete", userData);
+    const serializedAdminUserData = userDataSerializer(adminUserData);
     const serializedUserData = userDataSerializer(userData);
     const prevUserPhotoName = path.basename(serializedUserData.image);
+
+    // deleting images
     const prevUserImage = path.join(
       process.cwd(),
       "public",
@@ -83,14 +88,28 @@ export const deleteUser = async (req, res) => {
     );
     const dirForUser = path.join(process.cwd(), "public", "upload", userId);
 
-    try {
-      await access(dirForUser);
-      await removef(dirForUser);
-    } catch (error) {}
+    // check for permission
+    const isAdminPermittedToDelete = Boolean(
+      serializedAdminUserData.permission.setting.D
+    );
 
-    await deleteUserByIdFromDb({ id: userId });
-    await deleteNewByUserId({ userId });
-    res.status(200).send("success");
+    if (isAdminPermittedToDelete) {
+      try {
+        await access(dirForUser);
+        await removef(dirForUser);
+      } catch (error) {}
+
+      try {
+        await deleteUserByIdFromDb({ id: userId });
+        await deleteNewByUserId({ userId });
+        res.status(200).send("success");
+      } catch (error) {
+        console.log("internal server error", error);
+        res.status(500).send("internal server error");
+      }
+    } else {
+      res.status(403).send("forbidden");
+    }
   } catch (error) {
     console.log("internal server error", error);
     res.status(500).send("internal server error");
@@ -101,12 +120,9 @@ export const getAllUsers = async (req, res) => {
   try {
     const users = await getAllUsersFromDb();
     const permissionUsersData = getPermissionUsersData(users);
-    // console.log("get all users", permissionUsersData);
-
     res.status(200).send(permissionUsersData);
   } catch (error) {
     console.log("error when getting users", error);
-
     res.status(500).send("internal error");
   }
 };

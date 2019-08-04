@@ -6,7 +6,7 @@ import {
   getAllUsers,
   updateUserPermissions,
   saveUserImage
-} from "../controllers/users/index.mjs";
+} from "../controllers/users/users.mjs";
 import { cookieTokenAuth } from "../middlewares/auth/index.mjs";
 
 const router = express.Router();

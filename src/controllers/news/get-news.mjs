@@ -3,6 +3,7 @@ import { getAllNews } from "../../models/news/index.mjs";
 import { getUserFromDbById } from "../../models/users/index.mjs";
 import { userDataSerializer } from "../../utils/serializers/users/index.mjs";
 
+// func to execute news from db
 export const getNewsFromDB = async () => {
   const { pick } = lodash;
   const news = await getAllNews();
