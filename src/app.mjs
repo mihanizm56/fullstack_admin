@@ -85,18 +85,18 @@ const startApp = serverPort => serverState => {
   });
 };
 
-// if (cluster.isMaster) {
-//   let cpus = os.cpus().length;
-//   console.log(`your machine has ${os.cpus().length} cores`);
+if (cluster.isMaster) {
+  let cpus = os.cpus().length;
+  console.log(`your machine has ${os.cpus().length} cores`);
 
-//   for (let i = 0; i < cpus; i++) {
-//     console.log(`cluster ${i} started`);
-//     cluster.fork();
-//   }
+  for (let i = 0; i < cpus; i++) {
+    console.log(`cluster ${i} started`);
+    cluster.fork();
+  }
 
-//   cluster.on("exit", (worker, code) => {
-//     console.log(`Worker ${worker.id} finished. Exit code: ${code}`);
-//   });
-// } else {
-startApp(port)(server);
-// }
+  cluster.on("exit", (worker, code) => {
+    console.log(`Worker ${worker.id} finished. Exit code: ${code}`);
+  });
+} else {
+  startApp(port)(server);
+}
