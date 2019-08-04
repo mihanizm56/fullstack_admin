@@ -88,7 +88,6 @@ export const loginUser = async (req, res) => {
           access_token
         });
     } else {
-      console.log(error);
       res.status(401).send("user not valid");
     }
   } catch (error) {
