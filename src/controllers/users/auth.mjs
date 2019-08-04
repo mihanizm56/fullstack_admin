@@ -66,7 +66,6 @@ export const loginUser = async (req, res) => {
     await validateUser(loginedUser);
 
     const userData = await getUserFromDbByUserName(loginedUser.username);
-    console.log("get from the db", userData);
     const serializedUserData = userDataSerializer(userData);
     const access_token = createToken(serializedUserData.id);
     const comparePasswords = compareHashedPasswords(
