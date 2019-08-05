@@ -73,7 +73,7 @@ const startDB = () => {
   return mongoose.connection;
 };
 
-const startApp = serverPort => serverState => {
+const startServerAndDB = serverPort => serverState => {
   startDB().once("open", () => {
     startServer(serverState, serverPort)
       .then(server => {
@@ -85,18 +85,31 @@ const startApp = serverPort => serverState => {
   });
 };
 
-if (cluster.isMaster) {
-  let cpus = os.cpus().length;
-  console.log(`your machine has ${os.cpus().length} cores`);
-
-  for (let i = 0; i < cpus; i++) {
-    console.log(`cluster ${i} started`);
-    cluster.fork();
+const startApp = () => {
+  if (process.env.NODE_ENV === "development") {
+    startServerAndDB(port)(server);
+    return;
   }
 
-  cluster.on("exit", (worker, code) => {
-    console.log(`Worker ${worker.id} finished. Exit code: ${code}`);
-  });
-} else {
-  startApp(port)(server);
-}
+  if (process.env.NODE_ENV === "production") {
+    if (cluster.isMaster) {
+      let cpus = os.cpus().length;
+      console.log(`your machine has ${os.cpus().length} cores`);
+
+      for (let i = 0; i < cpus; i++) {
+        console.log(`cluster ${i} started`);
+        cluster.fork();
+      }
+
+      cluster.on("exit", (worker, code) => {
+        console.log(`Worker ${worker.id} finished. Exit code: ${code}`);
+      });
+    } else {
+      startServerAndDB(port)(server);
+    }
+
+    return;
+  }
+};
+
+startApp();

@@ -1,3 +1,4 @@
+import sanitize from "mongo-sanitize";
 import {
   addUserInDb,
   getUserFromDbByUserName,
@@ -15,10 +16,14 @@ import { userDataSerializer } from "../../utils/serializers/users/index.mjs";
 
 export const saveUser = async (req, res) => {
   const serializedUserData = userDataSerializer({ ...req.body });
+  const sanitizedUserPassword = sanitize(req.body.password);
   const access_token = createToken(serializedUserData.id);
 
   try {
-    await validateUser({ ...serializedUserData, password: req.body.password });
+    await validateUser({
+      ...serializedUserData,
+      password: sanitizedUserPassword
+    });
     const user = await getUserFromDbByUserName(serializedUserData.username);
     if (user) {
       res.status(400).send("user exists");
@@ -26,7 +31,7 @@ export const saveUser = async (req, res) => {
       try {
         await addUserInDb({
           ...serializedUserData,
-          password: req.body.password
+          password: sanitizedUserPassword
         }).save();
 
         const savedUserData = await getUserFromDbByUserName(
@@ -57,17 +62,23 @@ export const saveUser = async (req, res) => {
 };
 
 export const loginUser = async (req, res) => {
-  const loginedUser = req.body;
-  const isLongLogined = Boolean(loginedUser.remembered);
+  const sanitizedUserPassword = sanitize(req.body.password);
+  const serializedLoginedUser = userDataSerializer(req.body);
+  const isLongLogined = Boolean(req.body.remembered);
 
   try {
-    await validateUser(loginedUser);
+    await validateUser({
+      ...serializedLoginedUser,
+      password: sanitizedUserPassword
+    });
 
-    const userData = await getUserFromDbByUserName(loginedUser.username);
+    const userData = await getUserFromDbByUserName(
+      serializedLoginedUser.username
+    );
     const serializedUserData = userDataSerializer(userData);
     const access_token = createToken(serializedUserData.id);
     const comparePasswords = compareHashedPasswords(
-      makeHashedPassword(loginedUser.password),
+      makeHashedPassword(sanitizedUserPassword),
       userData.password
     );
 
@@ -95,12 +106,12 @@ export const loginUser = async (req, res) => {
 };
 
 export const tokenAuth = async (req, res) => {
-  const { user: userId } = res.locals.userTokenData;
+  const sanitizedUserId = sanitize(res.locals.userTokenData.user);
 
   try {
-    const userData = await getUserFromDbById(userId);
+    const userData = await getUserFromDbById(sanitizedUserId);
     const serializedUserData = userDataSerializer(userData);
-    const access_token = createToken(userId);
+    const access_token = createToken(sanitizedUserId);
     res.status(200).send({
       ...serializedUserData,
       access_token

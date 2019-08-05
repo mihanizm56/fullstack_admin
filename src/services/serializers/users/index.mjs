@@ -1,12 +1,14 @@
+import sanitize from "mongo-sanitize";
+
 export const userDataSerializer = userData => ({
-  id: userData.id,
-  username: userData.username,
-  surName: userData.surName || "",
-  firstName: userData.firstName || "",
-  middleName: userData.middleName || "",
-  image: userData.image || "",
+  id: userData.id ? sanitize(userData.id) : "",
+  username: userData.username ? sanitize(userData.username) : "",
+  surName: userData.surName ? sanitize(userData.surName) : "",
+  firstName: userData.firstName ? sanitize(userData.firstName) : "",
+  middleName: userData.middleName ? sanitize(userData.middleName) : "",
+  image: userData.image,
   permission: userData.permission,
-  permissionId: userData.id
+  permissionId: userData.id ? sanitize(userData.id) : ""
 });
 
 export const serializePermission = (prevPermission, nextPermissions) => ({
