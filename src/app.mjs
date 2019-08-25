@@ -6,7 +6,7 @@ import "./services/db-listeners/index.mjs";
 import createError from "http-errors";
 import helmet from "helmet";
 import mongoose from "mongoose";
-import cors from "cors";
+// import cors from "cors";
 import express from "express";
 import path from "path";
 import cookieParser from "cookie-parser";
@@ -29,7 +29,6 @@ const limiter = rateLimit({
 /// middlewares
 app.use(limiter);
 app.use(helmet());
-app.use(cors({ origin: "*" }));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(bodyParser.json());
