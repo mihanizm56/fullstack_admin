@@ -12,6 +12,8 @@ export const getNewsFromDB = async () => {
     const userId = item.userId;
     const newsData = pick(item, ["theme", "date", "text"]);
     const userData = await getUserFromDbById(userId);
+    console.log("additional test user data", userData, userId);
+
     const serializedUserData = userDataSerializer(userData);
 
     if (userData && userData.username) {
