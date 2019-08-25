@@ -190,12 +190,12 @@ export const saveUserImage = async (req, res) => {
       process.cwd(),
       "public",
       "upload",
-      userId,
+      sanitizedUserId,
       prevUserPhotoName
     );
     const newData = { ...serializedUserData, image: staticPathToFile };
 
-    updateUserFromDb(userId, newData);
+    updateUserFromDb(sanitizedUserId, newData);
     await deleteFile(prevUserImage);
     res.status(200).send({ path: staticPathToFile });
   } catch (error) {
