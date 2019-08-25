@@ -398,10 +398,6 @@ input:-webkit-autofill {
   align-items: flex-start;
 }
 
-.chat__settings {
-  display: none;
-}
-
 .adminPanelSettings__wrapper p {
   font-size: 22px;
   font-family: "Roboto";
