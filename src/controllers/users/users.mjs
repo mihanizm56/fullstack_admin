@@ -186,17 +186,26 @@ export const saveUserImage = async (req, res) => {
     const userData = await getUserFromDbById(sanitizedUserId);
     const serializedUserData = userDataSerializer(userData);
     const prevUserPhotoName = path.basename(serializedUserData.image);
-    const prevUserImage = path.join(
-      process.cwd(),
-      "public",
-      "upload",
-      sanitizedUserId,
-      prevUserPhotoName
-    );
+
+    if (prevUserPhotoName) {
+      const prevUserImage = path.join(
+        process.cwd(),
+        "public",
+        "upload",
+        sanitizedUserId,
+        prevUserPhotoName
+      );
+      try {
+        await deleteFile(prevUserImage);
+      } catch (error) {
+        console.log("error in deleting users photo");
+      }
+    }
+
     const newData = { ...serializedUserData, image: staticPathToFile };
 
-    updateUserFromDb(sanitizedUserId, newData);
-    await deleteFile(prevUserImage);
+    await updateUserFromDb(sanitizedUserId, newData);
+
     res.status(200).send({ path: staticPathToFile });
   } catch (error) {
     console.log("error in saveUserImage", error);
